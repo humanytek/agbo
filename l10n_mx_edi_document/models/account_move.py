@@ -31,6 +31,15 @@ class AccountInvoice(models.Model):
             currency = self.env['res.currency'].search([
                 ('name', '=', cfdi.get('Moneda'))], limit=1)
             self.l10n_mx_edi_set_cfdi_partner(cfdi, currency)
+            self.write(
+                {
+                    'ref': '%s%s' % (cfdi.get('Serie'), cfdi.get('Folio')),
+                    'invoice_date': cfdi.get('Fecha').split('T')[0],
+                    'date': cfdi.get('Fecha').split('T')[0],
+                    'currency_id': currency.id,
+                    'l10n_mx_edi_post_time': cfdi.get('Fecha').replace('T', ' '),
+                }
+            )
             invoice = self._search_invoice(cfdi) or invoice
             if invoice != self:
                 attachment.write({'res_id': False, 'res_model': False})
@@ -92,7 +101,7 @@ class AccountInvoice(models.Model):
                     'quantity': float(qty),
                     'product_uom_id': uom_id.id,
                     'tax_ids': self.get_line_taxes(rec),
-                    'price_unit': float(price),
+                    'price_unit': currency.round(float(price)),
                     'discount': discount,
                 })]})
 
@@ -103,11 +112,6 @@ class AccountInvoice(models.Model):
                     ','.join([rel.get('UUID') for
                               rel in cfdi.CfdiRelacionados.CfdiRelacionado]))
             invoice_data = {
-                'ref': '%s%s' % (cfdi.get('Serie'), cfdi.get('Folio')),
-                'invoice_date': cfdi.get('Fecha').split('T')[0],
-                'date': cfdi.get('Fecha').split('T')[0],
-                'currency_id': currency.id,
-                'l10n_mx_edi_post_time': cfdi.get('Fecha').replace('T', ' '),
                 'l10n_mx_edi_origin': cfdi_related,
             }
             self.write(invoice_data)

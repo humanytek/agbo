@@ -44,8 +44,8 @@ class IrAttachment(models.Model):
             node = cfdi.Complemento.xpath(attribute, namespaces=namespace)
             if node:
                 cfdi.Complemento.remove(node[0])
-            with BytesIO(schema) as xsd:
-                _check_with_xsd(cfdi, xsd)
+            # with BytesIO(schema) as xsd:
+            #     _check_with_xsd(cfdi, xsd)
             return cfdi
         except ValueError:
             return False
