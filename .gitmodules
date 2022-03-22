@@ -2,3 +2,8 @@
 	path = mexico
 	url = git@git.vauxoo.com:vauxoo/mexico.git
 	branch = 14.0
+
+[submodule "cequihuamarvelsa/agrobolder"]
+	path = cequihuamarvelsa/agrobolder
+	url = git@github.com:cequihuamarvelsa/agrobolder.git
+	branch = master
